@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-resource-linter-deployment
+  labels:
+    app: pod-resource-linter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pod-resource-linter
+  template:
+    metadata:
+      labels:
+        app: pod-resource-linter
+    spec:
+      containers:
+        - name: pod-resource-linter
+          image: us.gcr.io/municipalconnecttest/pod-resource-linter:v0.0.1
+          imagePullPolicy: Always
+          env:
+            - name: TLS_CERT_PATH
+              value: "/app/kube/certs/cert.pem"
+            - name: TLS_KEY_PATH
+              value: "/app/kube/certs/key.pem"
+          resources:
+            requests:
+              cpu: "0.1"
+              memory: "250Mi"
+            limits:
+              cpu: "0.5"
+              memory: "500Mi"
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+              name: http
+          volumeMounts:
+            - name: kube-web-hook-certs
+              mountPath: "/app/kube/certs"
+              readOnly: true
+      volumes:
+        - name: kube-web-hook-certs
+          secret:
+            secretName: pod-resource-linter-web-certs

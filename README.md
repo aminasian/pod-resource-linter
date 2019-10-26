@@ -7,4 +7,17 @@ The `K8 Pod Resource Linter` is a Kubernetes Custom Admission Webhook Controller
 
 ## How to Contribute
 
+## How to Build
+
+```bash
+CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o pod-resource-linter ./cmd/app
+```
+
+```bash
+docker build -f tools/docker/Dockerfile -t us.gcr.io/municipalconnecttest/pod-resource-linter:v0.0.1 .
+```
+
+
 ## How to Deploy
+
+See example Kubernetes deployment resources in `tools/kube/example_resources`.

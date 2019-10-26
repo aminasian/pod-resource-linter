@@ -1,0 +1,23 @@
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: pod-resource-linter-validating-webhook
+  labels:
+    app: pod-resource-linter
+webhooks:
+  - name: pod-resource-linter.aminasian.com
+    failurePolicy: Fail
+    clientConfig:
+      service:
+        name: pod-resource-linter
+        namespace: default
+        path: "/validate"
+      caBundle: ${CA_BUNDLE}
+    rules:
+      - operations: ["CREATE"]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    namespaceSelector:
+      matchLabels:
+        pod-resource-linter: enabled
